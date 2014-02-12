@@ -1,1 +1,7 @@
+.anjuta/
+.anjuta_sym_db.db
+.ropeproject/
+*~
+*.anjuta
 .project
+*.pyc
