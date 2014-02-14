@@ -33,7 +33,7 @@ class EncryptDecryptIdentityTest(unittest.TestCase):
 		encryptedPW = pm.decrypt(pw_hash)
 		self.assertEqual(testPW, encryptedPW, msg="Test if decryption of an encrypted password is the identity")
 	def tearDown(self):
-		self.pm.delete()
+		self.pm.delete_keyring()
 
 	
 if __name__ == '__main__':

@@ -79,5 +79,17 @@ class PasswordManager:
 		existing_keys = gk.list_keyring_names_sync()
 		return (keyring_name in existing_keys)
 
-	def delete(self):
+	def delete_key(self, keyid):
+		gk.item_delete_sync(self.keyring_name, keyid)
+		
+	def delete_keyring(self):
 		gk.delete_sync(self.keyring_name)
+
+	def create_sync(self, server_info):
+		gk.item_create_sync(
+			'GKApp', 
+			gk.ITEM_NETWORK_PASSWORD, 
+			server_info["user"] + "@" + server_info["host"] + ":" + server_info["port"], # This is the description and a unique identifier of the keyring item 
+			server_info.pop("pass"), # This is the complete information about the stored connection without the password 
+			server_info["pass"], # This is the password of the stored connection
+			True) # update if exists with same description and attributes
