@@ -68,6 +68,8 @@ class PasswordManager:
 				else:
 					PASSWORD_MSG = PASSWORD_MSG_RETRY
 			gk.create_sync(self.keyring_name, newpassword)
+			gk.set_lock_timeout(self.keyring_name, 60)
+			gk.set_lock_on_idle(self.keyring_name, True)
 
 	def decrypt(self, id):
 		return False
@@ -85,6 +87,9 @@ class PasswordManager:
 	def delete_keyring(self):
 		gk.delete_sync(self.keyring_name)
 
+	def save_host(self, connection_id, attributes):
+		false
+		
 	def create_sync(self, server_info):
 		gk.item_create_sync(
 			'GKApp', 

@@ -22,23 +22,22 @@ plain is the id that is refering to the stored information in the keyring.
 
 # Pulic methods
 
-`encrypt(password)`
-The method will encrypt the password and store it in the gnome keyring.
-It returns the ID of the password in the keyring.
-
-`decrypt(id)`
-This method will decrypt a password looking up the id in the keyring and 
-returning the stored password.
-
-`__init__(keyring_name)`
-The constructor of this class takes the keyring name on initialization.
-It creates a new keyring when it is not yet existing.
-
-`delete_key(id)`
-This method will remove a single key from the keyring.
-
-`delete_keyring()`
-This method deletes the entire keyring associated with the object.
-
-`save_host(attributes)`
-This method stores the information of a host into the keyring.
+* `encrypt(password)`
+  The method will encrypt the password and store it in the gnome keyring.
+  It returns the ID of the password in the keyring.
+* `decrypt(id)`
+  This method will decrypt a password looking up the id in the keyring and 
+  returning the stored password.
+* `__init__(keyring_name)`
+  The constructor of this class takes the keyring name on initialization.
+  It creates a new keyring when it is not yet existing.
+* `delete_key(id)`
+  This method will remove a single key from the keyring.
+* `delete_keyring()`
+  This method deletes the entire keyring associated with the object.
+* `save_host(connection_id, attributes)`
+  This method stores the information of a already existing connection into the 
+  keyring.
+* `create_sync(server_info)`
+  This method creates a new entry in the keyring. `server_info` is a dictionary
+  that stores all the important information about the connection.
