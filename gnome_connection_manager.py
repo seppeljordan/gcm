@@ -160,10 +160,10 @@ from __future__ import with_statement
 import os
 import operator
 import sys
-import base64
 import time
 import tempfile
 
+# We try to import gtk and throw an error if we do not find it.
 try:
     import gtk
     import gobject
@@ -178,8 +178,11 @@ except:
       'You must install libvte for python')
     error.run()
     sys.exit (1)
+# Now we can imort our Host module because it needs vte as a dependency
+from host import Host, HostUtils
+from crypto import encrypt, decrypt
 
-#Ver si expect esta instalado
+# check if expect is installed properly
 try:
     e = os.system("expect >/dev/null 2>&1 -v")
 except:
@@ -283,6 +286,12 @@ class conf():
     VERSION = 0
 
 def msgbox(text, parent=None):
+    """
+    Print a message box to the screen containing 'text' and a button
+
+    text: Is the text that is displayed in the msgbox
+    parent: is the parent of the message box
+    """
     msgBox = gtk.MessageDialog(parent, gtk.DIALOG_MODAL, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, text)
     msgBox.set_icon_from_file(ICON_PATH)
     msgBox.run()    
@@ -397,36 +406,6 @@ def xor(pw, str1):
         liste += [chr(fin)]
     return liste
         
-def encrypt_old(passw, string):
-    try:
-        ret = xor(passw, string)    
-        s = base64.b64encode("".join(ret))
-    except:
-        s = ""
-    return s
- 
-def decrypt_old(passw, string):
-    try:
-        ret = xor(passw, base64.b64decode(string))
-        s = "".join(ret)
-    except:
-        s = ""
-    return s
-    
-def encrypt(passw, string):
-    try:
-        s = pyAES.encrypt(string, passw)
-    except:
-        s = ""
-    return s
- 
-def decrypt(passw, string):
-    try:
-        s = decrypt_old(passw, string) if conf.VERSION == 0 else pyAES.decrypt(string, passw)
-    except:
-        s = ""
-    return s
-
 class Wmain(SimpleGladeApp):
 
     def __init__(self, path="gnome-connection-manager.glade",
@@ -2021,114 +2000,6 @@ class Wmain(SimpleGladeApp):
             self.popupMenuFolder.popup( None, None, None, event.button, event.time)
             return True
     #-- Wmain.on_tvServers_button_press_event }
-
-class Host():
-    def __init__(self, *args):
-        try:
-            self.i = 0
-            self.group = self.get_arg(args, None)
-            self.name =  self.get_arg(args, None)
-            self.description =  self.get_arg(args, None)            
-            self.host =  self.get_arg(args, None)
-            self.user =   self.get_arg(args, None)
-            self.password = self.get_arg(args, None)
-            self.private_key = self.get_arg(args, None)
-            self.port = self.get_arg(args, 22)
-            self.tunnel = self.get_arg(args, '').split(",")
-            self.type = self.get_arg(args, 'ssh')
-            self.commands = self.get_arg(args, None)
-            self.keep_alive = self.get_arg(args, 0)
-            self.font_color = self.get_arg(args, '')
-            self.back_color = self.get_arg(args, '')
-            self.x11 = self.get_arg(args, False)
-            self.agent = self.get_arg(args, False)
-            self.compression = self.get_arg(args,False)
-            self.compressionLevel = self.get_arg(args,'')
-            self.extra_params = self.get_arg(args, '')
-            self.log = self.get_arg(args, False)
-            self.backspace_key = self.get_arg(args, int(vte.ERASE_AUTO))
-            self.delete_key = self.get_arg(args, int(vte.ERASE_AUTO))
-        except:
-            pass
-       
-
-    def get_arg(self, args, default):
-        arg = args[self.i] if len(args)>self.i else default
-        self.i +=1
-        return arg
-
-    def __repr__(self):
-        return "group=[%s],\t name=[%s],\t host=[%s],\t type=[%s]" % (self.group, self.name, self.host, self.type)
-
-    def tunnel_as_string(self):
-        return ",".join(self.tunnel)
-
-    def clone(self):
-        return Host(self.group, self.name, self.description, self.host, self.user, self.password, self.private_key, self.port, self.tunnel_as_string(), self.type, self.commands, self.keep_alive, self.font_color, self.back_color, self.x11, self.agent, self.compression, self.compressionLevel, self.extra_params, self.log, self.backspace_key, self.delete_key)
-
-class HostUtils:
-    @staticmethod
-    def get_val(cp, section, name, default):
-        try:
-            return cp.get(section, name) if type(default)!=type(True) else cp.getboolean(section, name)
-        except:
-            return default
-    
-    @staticmethod
-    def load_host_from_ini(cp, section, pwd=''):
-        if pwd=='':
-            pwd = get_password()
-        group = cp.get(section, "group")
-        name = cp.get(section, "name")
-        host = cp.get(section, "host")
-        user = cp.get(section, "user")
-        password = decrypt(pwd, cp.get(section, "pass"))
-        description = HostUtils.get_val(cp, section, "description", "")
-        private_key = HostUtils.get_val(cp, section, "private_key", "")
-        port = HostUtils.get_val(cp, section, "port", "22")
-        tunnel = HostUtils.get_val(cp, section, "tunnel", "")
-        ctype = HostUtils.get_val(cp, section, "type", "ssh")
-        commands = HostUtils.get_val(cp, section, "commands", "").replace('\x00', '\n')
-        keepalive = HostUtils.get_val(cp, section, "keepalive", "")
-        fcolor = HostUtils.get_val(cp, section, "font-color", "")
-        bcolor = HostUtils.get_val(cp, section, "back-color", "")
-        x11 = HostUtils.get_val(cp, section, "x11", False)
-        agent = HostUtils.get_val(cp, section, "agent", False)
-        compression = HostUtils.get_val(cp, section, "compression", False)
-        compressionLevel = HostUtils.get_val(cp, section, "compression-level", "")
-        extra_params = HostUtils.get_val(cp, section, "extra_params", "")
-        log = HostUtils.get_val(cp, section, "log", False)
-        backspace_key = int(HostUtils.get_val(cp, section, "backspace-key", int(vte.ERASE_AUTO)))
-        delete_key = int(HostUtils.get_val(cp, section, "delete-key", int(vte.ERASE_AUTO)))
-        h = Host(group, name, description, host, user, password, private_key, port, tunnel, ctype, commands, keepalive, fcolor, bcolor, x11, agent, compression, compressionLevel,  extra_params, log, backspace_key, delete_key)
-        return h
-
-    @staticmethod
-    def save_host_to_ini(cp, section, host, pwd=''):
-        if pwd=='':
-            pwd = get_password()
-        cp.set(section, "group", host.group)
-        cp.set(section, "name", host.name)
-        cp.set(section, "description", host.description)
-        cp.set(section, "host", host.host)
-        cp.set(section, "user", host.user)
-        cp.set(section, "pass", encrypt(pwd, host.password))
-        cp.set(section, "private_key", host.private_key)
-        cp.set(section, "port", host.port)
-        cp.set(section, "tunnel", host.tunnel_as_string())
-        cp.set(section, "type", host.type)
-        cp.set(section, "commands", host.commands.replace('\n', '\x00'))
-        cp.set(section, "keepalive", host.keep_alive)
-        cp.set(section, "font-color", host.font_color)
-        cp.set(section, "back-color", host.back_color)
-        cp.set(section, "x11", host.x11)
-        cp.set(section, "agent", host.agent)
-        cp.set(section, "compression", host.compression)
-        cp.set(section, "compression-level", host.compressionLevel)
-        cp.set(section, "extra_params", host.extra_params)
-        cp.set(section, "log", host.log)
-        cp.set(section, "backspace-key", host.backspace_key)
-        cp.set(section, "delete-key", host.delete_key)
 
 class Whost(SimpleGladeApp):
 

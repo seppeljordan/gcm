@@ -75,7 +75,7 @@ class PasswordManager:
 		return False
 
 	def encrypt(self, password):
-		return False
+
 
 	def _keyring_exists(self):
 		existing_keys = gk.list_keyring_names_sync()

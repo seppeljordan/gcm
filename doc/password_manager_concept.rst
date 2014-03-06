@@ -1,4 +1,5 @@
-# Interface to gnome-keyring
+Interface to gnome-keyring
+==========================
 
 We want to implement a interface to the gnome keyring.
 We will approach this task by creating a new class called **password_manager**.
@@ -6,21 +7,24 @@ We will approach this task by creating a new class called **password_manager**.
 The password manage automatically stores the passwords in a gnome keyring and
 looks up already saved passwords.
 
-## Name of the database
+Name of the database
+--------------------
 
 We have to store the keyring in a manner so that it will not interfere with
 
 the users other keyrings.  When we activate the gnome keyring support then we
 will ask the user which keyring the want the keyring to be named.
 
-# Concept of storing the data
+Concept of storing the data
+===========================
 
 We want to store the server data completly in the keyring. The procedure that
 stores the password data takes a dictionary with data. We use that to store any
 data that referes to the a stored connection. The only thing that is stored
 plain is the id that is refering to the stored information in the keyring.
 
-# Pulic methods
+Pulic methods
+=============
 
 * `encrypt(password)`
   The method will encrypt the password and store it in the gnome keyring.
