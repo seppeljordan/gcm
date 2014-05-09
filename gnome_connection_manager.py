@@ -1383,7 +1383,8 @@ class Wmain(SimpleGladeApp):
         for grupo in groups:
             for host in groups[grupo]:
                 section = "host " + str(i)
-                cp.add_section(section)
+                # section means the section in the config file
+                cp.add_section(section) # we add a new section named host i to the config file
                 HostUtils.save_host_to_ini(cp, section, host)
                 i+=1
         
