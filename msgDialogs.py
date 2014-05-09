@@ -4,7 +4,7 @@
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -23,6 +23,17 @@ ICON_PATH = os.path.dirname(os.path.abspath(__file__)) + "/icon.png"
 class EntryDialog( gtk.Dialog):
     """Create a Window that prompts the user to enter text."""
     def __init__(self, title, message, default_text='', modal=True, mask=False):
+        """Create an objtect to render a simple input window
+
+        This procedure relies heavily on the gtk bindings.
+
+        Arguments are:
+        title -- The title of the window
+        message -- a text that is prompted to the user
+        default_text -- The text that is in the input box by default
+        modal -- modal windows block all parent widows from user input
+                 until the user interacted with the modal window
+        """
         gtk.Dialog.__init__(self)
         self.set_title(title)
         self.connect("destroy", self.quit)
