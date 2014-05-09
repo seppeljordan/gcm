@@ -79,7 +79,12 @@ class EntryDialog( gtk.Dialog):
 
 def inputbox(title, text, default='', password=False):
 	"""This procedure creates a small inputbox for user interaction.
-
+        
+        When this procedure is called it will open a small window with
+        a label and a edit box.  The user can click ok or press enter
+        to confirm their input.  If they click on cancel 'None' will
+        be returned.
+        
         Arguments: 
         title -- string that will be displayed as window title 
         text -- string that will be displayed to the user as a prompt
@@ -93,3 +98,12 @@ def inputbox(title, text, default='', password=False):
 		response = None
 	msgBox.destroy()
 	return response
+
+def errorMessage(message):
+    dialog = gtk.MessageDialog (None, 
+                                gtk.DIALOG_MODAL, 
+                                gtk.MESSAGE_ERROR, 
+                                gtk.BUTTONS_OK,
+                                message)
+    dialog.run()
+

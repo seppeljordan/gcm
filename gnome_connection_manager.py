@@ -128,6 +128,7 @@
 #        - Se muestra mensaje en pantalla cuando cambia la key de un host para ssh
 #        - Boton donar
 
+# Import all the necessary modules
 from __future__ import with_statement
 import os
 import operator
@@ -155,12 +156,31 @@ except:
 from host import Host, HostUtils
 from crypto import encrypt, decrypt
 
+def checkCommand(command, param="-v"):
+    """Check if a command is installed and in the systems path
+
+    This command assumes that the host machine uses spaces to seperate
+    commands from parameters.  It is also assumed that the command
+    that you want to check returns 0 on succesful execution.  This
+    procedure is not portable.
+
+    Arguments:
+    command -- the command that we want to check
+    param -- a parameter that is passed to the command, defaults
+             to '-v'
+
+    Returns True when the command was found and otherwise False.
+
+    """
+    # check if the command works by checking its error code
+    e = os.system(command+" "+param+" >/dev/null 2>&1")
+    if e != 0:
+        return False
+    return True
+
 # check if expect is installed properly
-try:
-    e = os.system("expect >/dev/null 2>&1 -v")
-except:
-    e = -1
-if e != 0:
+e = checkCommand("expect")
+if e == False:
     error = gtk.MessageDialog (None, gtk.DIALOG_MODAL, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
       'You must install expect')
     error.run()
