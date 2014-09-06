@@ -2132,7 +2132,7 @@ class HostUtils:
 
 class Whost(SimpleGladeApp):
 
-    def __init__(self, path="gnome-connection-manager.glade",
+    def __init__(self, path=BASE_PATH+"/gnome-connection-manager.glade",
                  root="wHost",
                  domain=domain_name, **kwargs):
         path = os.path.join(glade_dir, path)
@@ -2519,7 +2519,7 @@ class Whost(SimpleGladeApp):
 
 class Wabout(SimpleGladeApp):
 
-    def __init__(self, path="gnome-connection-manager.glade",
+    def __init__(self, path=BASE_PATH+"/gnome-connection-manager.glade",
                  root="wAbout",
                  domain=domain_name, **kwargs):
         path = os.path.join(glade_dir, path)
@@ -2544,7 +2544,7 @@ class Wabout(SimpleGladeApp):
 
 class Wconfig(SimpleGladeApp):
 
-    def __init__(self, path="gnome-connection-manager.glade",
+    def __init__(self, path=BASE_PATH+"/gnome-connection-manager.glade",
                  root="wConfig",
                  domain=domain_name, **kwargs):
         path = os.path.join(glade_dir, path)
@@ -2815,7 +2815,7 @@ class Wconfig(SimpleGladeApp):
 class Wcluster(SimpleGladeApp):
     COLOR = gtk.gdk.Color('#FFFC00')
     
-    def __init__(self, path="gnome-connection-manager.glade",
+    def __init__(self, path=BASE_PATH+"/gnome-connection-manager.glade",
                  root="wCluster",
                  domain=domain_name, terms=None, **kwargs):
         self.terms = terms
