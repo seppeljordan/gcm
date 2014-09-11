@@ -3,6 +3,7 @@ Contains dialog boxed for the gnome connectino manager
 """
 
 import gtk
+import msgDialogs
 
 def msgbox(text, parent=None):
     """
@@ -12,7 +13,7 @@ def msgbox(text, parent=None):
     parent: is the parent of the message box
     """
     msgBox = gtk.MessageDialog(parent, gtk.DIALOG_MODAL, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, text)
-    msgBox.set_icon_from_file(ICON_PATH)
+    msgBox.set_icon_from_file(msgDialogs.ICON_PATH)
     msgBox.run()    
     msgBox.destroy()
 
@@ -26,7 +27,7 @@ def msgconfirm(text):
     a GTK response Object.
     """
     msgBox = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL, text)
-    msgBox.set_icon_from_file(ICON_PATH)
+    msgBox.set_icon_from_file(msgDialogs.ICON_PATH)
     response = msgBox.run()    
     msgBox.destroy()
     return response
@@ -34,7 +35,7 @@ def msgconfirm(text):
 
 def inputbox(title, text, default='', password=False):
     msgBox = EntryDialog(title, text, default, mask=password)
-    msgBox.set_icon_from_file(ICON_PATH)
+    msgBox.set_icon_from_file(msgDialogs.ICON_PATH)
     if msgBox.run() == gtk.RESPONSE_OK:
         response = msgBox.value
     else:
