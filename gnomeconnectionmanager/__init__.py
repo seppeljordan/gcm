@@ -1,4 +1,3 @@
-#!/usr/bin/python2
 # -*- coding: utf-8 -*-
 
 # Import all the necessary modules
@@ -8,6 +7,7 @@ import operator
 import sys
 import time
 import tempfile
+import subprocess
 
 # We try to import gtk and throw an error if we do not find it.
 try:
@@ -25,34 +25,14 @@ except:
       'You must install libvte for python')
     error.run()
     sys.exit (1)
+
 # Now we can imort our Host module because it needs vte as a dependency
 from host import Host, HostUtils
 from crypto import encrypt, decrypt
-
-def checkCommand(command, param="-v"):
-    """Check if a command is installed and in the systems path
-
-    This command assumes that the host machine uses spaces to seperate
-    commands from parameters.  It is also assumed that the command
-    that you want to check returns 0 on succesful execution.  This
-    procedure is not portable.
-
-    Arguments:
-    command -- the command that we want to check
-    param -- a parameter that is passed to the command, defaults
-             to '-v'
-
-    Returns True when the command was found and otherwise False.
-
-    """
-    # check if the command works by checking its error code
-    e = os.system(command+" "+param+" >/dev/null 2>&1")
-    if e != 0:
-        return False
-    return True
+import gnomeconnectionmanager.command as Cmd
 
 # check if expect is installed properly
-e = checkCommand("expect")
+e = Cmd.checkCommand("expect")
 if e == False:
     error = gtk.MessageDialog (None, gtk.DIALOG_MODAL, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
       'You must install expect')
@@ -290,6 +270,7 @@ class Wmain(SimpleGladeApp):
         self.menuServers = self.get_widget("menuServers")
         self.menuCustomCommands = self.get_widget("menuCustomCommands")
         self.current = None
+        # count seems to be a counter for open tabs in the main window
         self.count = 0        
     #-- Wmain.new }
 
@@ -1428,7 +1409,7 @@ class Wmain(SimpleGladeApp):
     #-- Wmain.on_wMain_delete_event {
     def on_wMain_delete_event(self, widget, *args):
         (conf.WINDOW_WIDTH, conf.WINDOW_HEIGHT) = self.get_widget("wMain").get_size()
-        if conf.CONFIRM_ON_EXIT and self.count>0 and msgconfirm("%s %d %s" % (_("Hay"), self.count, _("consolas abiertas, confirma que desea salir?")) ) != gtk.RESPONSE_OK:
+        if conf.CONFIRM_ON_EXIT and self.count>0 and dialogs.msgconfirm("%s %d %s" % (_("Hay"), self.count, _("consolas abiertas, confirma que desea salir?")) ) != gtk.RESPONSE_OK:
             return True
     #-- Wmain.on_wMain_delete_event }
 

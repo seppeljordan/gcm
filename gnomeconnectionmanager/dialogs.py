@@ -17,6 +17,14 @@ def msgbox(text, parent=None):
     msgBox.destroy()
 
 def msgconfirm(text):
+    """Open a confirm window
+
+    arguments:
+    text: The text that prompted to the user
+
+    return:
+    a GTK response Object.
+    """
     msgBox = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL, text)
     msgBox.set_icon_from_file(ICON_PATH)
     response = msgBox.run()    
